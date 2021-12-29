@@ -7,11 +7,13 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
-# define THINKING " \033[1;32m%6lu %3d   is thinking\n\033[0m"
-# define TAKEN_FORK " \033[1;37m%6lu %3d   has taken a fork\n\033[0m"
-# define SLEEPING " \033[1;34m%6lu %3d   is sleeping\n\033[0m"
-# define EATING " \033[1;33m%6lu %3d   is eating\n\033[0m"
-# define DIED " \033[1;31m%6lu %3d   died\n\033[0m"
+
+# define THINK " \e[1;32m%6lu %4d    is thinking\n\e[0m"
+# define TAKE_FORK " \e[1;37m%6lu %4d    has taken a fork\n\e[0m"
+# define SLEEP " \e[1;34m%6lu %4d    is sleeping\n\e[0m"
+# define EAT " \e[1;33m%6lu %4d    is eating\n\e[0m"
+# define DIED " \e[1;31m%6lu %4d    died\n\e[0m"
+# define ERROR_MSG "\e[1;91m Error\n\e[0m"
 
 typedef struct s_config
 {
@@ -31,7 +33,6 @@ typedef struct s_philo
 	int				order;
 	int				count_eat;
 	time_t			last_eat;
-	time_t			lim_die;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	r_fork;
 	pthread_t		tid;
@@ -47,8 +48,8 @@ typedef struct s_data
 
 int		ft_atoi_philo(const char *str);
 time_t	ft_get_time(void);
-int		ft_check_isdigit(char **argv);
-void	*ft_calloc(size_t count, size_t size);
+void	*ft_calloc(long int count, int size);
 int		ft_simulation(t_data *data);
+void    ft_putstr_err(char *str);
 
 #endif

@@ -1,76 +1,61 @@
-#include "philo.h"
+#include "../includes/philo.h"
 
 void	ft_clear(t_data *data)
 {
 	int	i;
 
-	i = 0;
-	while (i < data->config.count_philo)
-	{
+	i = -1;
+	while (++i < data->config.count_philo)
 		pthread_mutex_destroy(&data->philos[i].r_fork);
-		i++;
-	}
 	pthread_mutex_destroy(&data->config.print_mutex);
 	free(data->philos);
 }
 
-int	ft_error_exit(t_data *data, int code_ex)
+int	ft_error_exit(t_data *data, int flag_clear)
 {
-	if (code_ex == 1)
+	if (flag_clear)
 		ft_clear(data);
-	write(2, "Error\n", 6);
-	return (code_ex);
+    ft_putstr_err(ERROR_MSG);
+	return (1);
 }
 
 int	ft_init_philos(t_data *data)
 {
 	int	i;
 
-	i = 0;
-	data->philos = (t_philo *)ft_calloc(data->config.count_philo, \
-														sizeof(t_philo));
-	if (data->philos == NULL)
+	data->philos = (t_philo *)ft_calloc(data->config.count_philo, sizeof(t_philo));
+	if (!data->philos)
 		return (1);
-	while (i < data->config.count_philo)
+    i = -1;
+    while (++i < data->config.count_philo)
 	{
 		data->philos[i].order = i;
 		data->philos[i].config = &data->config;
-		if (i + 1 == data->config.count_philo)
-			data->philos[i].l_fork = &data->philos[0].r_fork;
-		else
-			data->philos[i].l_fork = &data->philos[i + 1].r_fork;
-		if (pthread_mutex_init(&data->philos[i].r_fork, NULL))
+        data->philos[i].l_fork = &data->philos[(i + 1) % data->config.count_philo].r_fork;
+		if (pthread_mutex_init(&data->philos[i].r_fork, 0))
 			return (1);
-		i++;
 	}
-	if (pthread_mutex_init(&data->config.print_mutex, NULL))
+	if (pthread_mutex_init(&data->config.print_mutex, 0))
 		return (1);
 	return (0);
 }
 
 int	ft_init_config(t_data *data, int argc, char **argv)
 {
-	if (!ft_check_isdigit(argv))
-		return (1);
 	data->config.count_philo = ft_atoi_philo(argv[1]);
 	data->config.time_die = ft_atoi_philo(argv[2]);
 	data->config.time_eat = ft_atoi_philo(argv[3]);
 	data->config.time_sleep = ft_atoi_philo(argv[4]);
+    if (data->config.count_philo < 1 || data->config.time_die == -1 || data->config.time_eat == -1 || data->config.time_sleep == -1)
+        return (1);
 	if (argc == 6)
-		data->config.count_eat = ft_atoi_philo(argv[5]);
-	if (argc == 5)
-	{
-		if (data->config.count_philo < 1 || data->config.count_philo > 200 || \
-		data->config.time_die < 60 || data->config.time_eat < 60 || \
-		data->config.time_sleep < 60)
-			return (1);
+    {
+        data->config.count_eat = ft_atoi_philo(argv[5]);
+        if (data->config.count_eat < 1)
+            return (1);
+    }
+    else
 		data->config.count_eat = -1;
-	}
-	if (argc == 6)
-	{
-		if (data->config.count_eat < 1)
-			return (1);
-	}
 	return (0);
 }
 
