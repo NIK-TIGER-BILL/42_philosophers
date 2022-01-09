@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ebalsami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/09 15:03:23 by ebalsami          #+#    #+#             */
+/*   Updated: 2022/01/09 15:03:24 by ebalsami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_BONUS_H
 # define PHILO_BONUS_H
 
@@ -38,7 +50,6 @@ typedef struct s_philo
 	int				order;
 	int				count_eat;
 	time_t			last_eat;
-	time_t			lim_die;
 	pid_t			pid;
 	sem_t			*sem_eats;
 	t_config		*config;
@@ -53,12 +64,11 @@ typedef struct s_data
 
 int		ft_atoi_philo(const char *str);
 time_t	ft_get_time(void);
-int		ft_check_isdigit(char **argv);
 void	*ft_calloc(long int count, int size);
 void	ft_print_message(t_philo *philo, char *message);
 int		ft_init_config(t_data *data, int argc, char **argv);
 int		ft_init_philos(t_data *data);
 int		ft_simulation(t_data *data);
-void    ft_putstr_err(char *str);
+void	ft_putstr_err(char *str);
 
 #endif

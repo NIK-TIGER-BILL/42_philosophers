@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ebalsami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/09 15:03:34 by ebalsami          #+#    #+#             */
+/*   Updated: 2022/01/09 15:03:35 by ebalsami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo_bonus.h"
 
 void	ft_clear(t_data *data)
@@ -7,21 +19,18 @@ void	ft_clear(t_data *data)
 	sem_close(data->config.sem_dead);
 	sem_close(data->config.sem_print);
 	sem_close(data->config.sem_fork);
-	i = 0;
-	while (i < data->config.count_philo)
-	{
+	i = -1;
+	while (++i < data->config.count_philo)
 		sem_close(data->philos[i].sem_eats);
-		i++;
-	}
 	free(data->philos);
 }
 
 int	ft_error_exit(t_data *data, int flag_clear)
 {
-    if (flag_clear)
-        ft_clear(data);
-    ft_putstr_err(ERROR_MSG);
-    return (1);
+	if (flag_clear)
+		ft_clear(data);
+	ft_putstr_err(ERROR_MSG);
+	return (1);
 }
 
 int	main(int argc, char **argv)

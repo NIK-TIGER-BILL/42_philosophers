@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ebalsami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/09 15:02:49 by ebalsami          #+#    #+#             */
+/*   Updated: 2022/01/09 15:02:50 by ebalsami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -50,6 +62,6 @@ int		ft_atoi_philo(const char *str);
 time_t	ft_get_time(void);
 void	*ft_calloc(long int count, int size);
 int		ft_simulation(t_data *data);
-void    ft_putstr_err(char *str);
+void	ft_putstr_err(char *str);
 
 #endif

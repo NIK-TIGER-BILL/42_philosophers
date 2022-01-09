@@ -1,41 +1,46 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simulation.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ebalsami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/09 15:03:39 by ebalsami          #+#    #+#             */
+/*   Updated: 2022/01/09 15:03:40 by ebalsami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/philo_bonus.h"
 
-void	*ft_monitor(t_philo *philo)
+void	ft_monitor(t_philo *philo)
 {
-	time_t	time;
-
-	while (21)
+	while (1)
 	{
 		usleep(1000);
-		sem_wait(philo->config->sem_print);
-		time = ft_get_time() - philo->config->start_time;
-		if (!philo->config->stop && ft_get_time() > philo->lim_die)
+		if (!philo->config->stop && ft_get_time()
+			> philo->last_eat + philo->config->time_die)
 		{
 			philo->config->stop = 1;
-			printf(DIED, time, philo->order + 1);
-			sem_post(philo->config->sem_print);
+			printf(DIED, ft_get_time() - philo->config->start_time,
+				philo->order + 1);
 			sem_post(philo->config->sem_dead);
-			return ((void *)0);
+			return ;
 		}
 		sem_post(philo->config->sem_print);
 	}
-	return ((void *)0);
 }
 
-void	*ft_monitor_eat(t_data *data)
+void	ft_monitor_eat(t_data *data)
 {
 	int	i;
 
 	if (data->config.count_eat == -1)
-		return ((void *)0);
-	i = 0;
-	while (i < data->config.count_philo)
-	{
+		return ;
+	i = -1;
+	while (++i < data->config.count_philo)
 		sem_wait(data->philos[i].sem_eats);
-		i++;
-	}
 	sem_post(data->config.sem_dead);
-	return ((void *)0);
+	return ;
 }
 
 void	ft_eat(t_philo *philo)
@@ -46,15 +51,8 @@ void	ft_eat(t_philo *philo)
 	ft_print_message(philo, TAKE_FORK);
 	ft_print_message(philo, EAT);
 	philo->last_eat = ft_get_time();
-	philo->lim_die = philo->last_eat + philo->config->time_die;
-	if (philo->config->count_eat != -1)
-	{
-		sem_wait(philo->config->sem_print);
-		philo->count_eat++;
-		if (philo->count_eat == philo->config->count_eat)
-			sem_post(philo->sem_eats);
-		sem_post(philo->config->sem_print);
-	}
+	if (++philo->count_eat == philo->config->count_eat)
+		sem_post(philo->sem_eats);
 	usleep(philo->config->time_eat * 1000);
 	sem_post(philo->config->sem_fork);
 	sem_post(philo->config->sem_fork);
@@ -65,7 +63,6 @@ int	ft_philos_live(t_philo *philo)
 	pthread_t	tid;
 
 	philo->last_eat = ft_get_time();
-	philo->lim_die = philo->last_eat + philo->config->time_die;
 	if (pthread_create(&tid, NULL, (void *)ft_monitor, philo))
 		exit(1);
 	if (pthread_detach(tid))
@@ -86,7 +83,7 @@ int	ft_simulation(t_data *data)
 	pthread_t	tid;
 
 	data->config.start_time = ft_get_time();
-    i = -1;
+	i = -1;
 	while (++i < data->config.count_philo)
 	{
 		data->philos[i].pid = fork();
