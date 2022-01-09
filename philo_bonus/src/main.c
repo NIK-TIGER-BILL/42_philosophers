@@ -1,4 +1,4 @@
-#include "philo_bonus.h"
+#include "../includes/philo_bonus.h"
 
 void	ft_clear(t_data *data)
 {
@@ -16,12 +16,12 @@ void	ft_clear(t_data *data)
 	free(data->philos);
 }
 
-int	ft_error_exit(t_data *data, int code_ex)
+int	ft_error_exit(t_data *data, int flag_clear)
 {
-	if (code_ex == 1)
-		ft_clear(data);
-	write(2, "Error\n", 6);
-	return (code_ex);
+    if (flag_clear)
+        ft_clear(data);
+    ft_putstr_err(ERROR_MSG);
+    return (1);
 }
 
 int	main(int argc, char **argv)

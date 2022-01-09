@@ -1,4 +1,4 @@
-#include "philo_bonus.h"
+#include "../includes/philo_bonus.h"
 
 void	*ft_monitor(t_philo *philo)
 {
@@ -41,10 +41,10 @@ void	*ft_monitor_eat(t_data *data)
 void	ft_eat(t_philo *philo)
 {
 	sem_wait(philo->config->sem_fork);
-	ft_print_message(philo, TAKEN_FORK);
+	ft_print_message(philo, TAKE_FORK);
 	sem_wait(philo->config->sem_fork);
-	ft_print_message(philo, TAKEN_FORK);
-	ft_print_message(philo, EATING);
+	ft_print_message(philo, TAKE_FORK);
+	ft_print_message(philo, EAT);
 	philo->last_eat = ft_get_time();
 	philo->lim_die = philo->last_eat + philo->config->time_die;
 	if (philo->config->count_eat != -1)
@@ -73,9 +73,9 @@ int	ft_philos_live(t_philo *philo)
 	while (!philo->config->stop)
 	{
 		ft_eat(philo);
-		ft_print_message(philo, SLEEPING);
+		ft_print_message(philo, SLEEP);
 		usleep(philo->config->time_sleep * 1000);
-		ft_print_message(philo, THINKING);
+		ft_print_message(philo, THINK);
 	}
 	exit(0);
 }
@@ -85,14 +85,13 @@ int	ft_simulation(t_data *data)
 	int			i;
 	pthread_t	tid;
 
-	i = 0;
 	data->config.start_time = ft_get_time();
-	while (i < data->config.count_philo)
+    i = -1;
+	while (++i < data->config.count_philo)
 	{
 		data->philos[i].pid = fork();
 		if (!data->philos[i].pid)
 			ft_philos_live(&data->philos[i]);
-		i++;
 		usleep(1000);
 	}
 	if (pthread_create(&tid, NULL, (void *)ft_monitor_eat, data))
